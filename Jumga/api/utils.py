@@ -12,6 +12,10 @@ class Rave():
     def __init__(self, secret_key: str, encryption_key: str) -> None: 
         self.secret_key = secret_key
         self.encryption_key = encryption_key
+        self.headers = headers = {
+            'content-type': 'application/json',
+            "Authorization": self.secret_key
+        }
 
     def encryptData(self, data: str) -> str:
         """
@@ -41,12 +45,27 @@ class Rave():
         endpoint = "https://api.flutterwave.com/v3/charges?type=card"
 
         # set the content type to application/json
-        headers = {
-            'content-type': 'application/json',
-            "Authorization": self.secret_key
+
+        response = requests.post(endpoint, headers=self.headers, data=json.dumps(body))
+        return response.json()
+
+    def validate_charge(self, flw_ref: str, otp: str, tx_type="card") -> dict:
+        body = {
+            "otp": otp,
+            "flw_ref": flw_ref,
+            "type": tx_type
         }
 
-        response = requests.post(endpoint, headers=headers, data=json.dumps(body))
+        endpoint = "https://api.flutterwave.com/v3/validate-charge"
+
+        response = requests.post(endpoint, headers=self.headers, data=json.dumps(body))
+        return response.json()
+
+
+    def verify_transaction(self, id: str) -> dict:
+        endpoint = f"https://api.flutterwave.com/v3/transactions/{id}/verify"
+
+        response = requests.get(endpoint, headers=self.headers)
         return response.json()
 
 
@@ -57,7 +76,7 @@ payload = {
     "expiry_year":"32",
     "currency":"NGN",
     "amount":"1000",
-    "tx_ref":"MC-3243e",
+    "tx_ref":"MC-3243y",
     "fullname":"Yemi Desola",
     "email":"user@flw.com",
     "authorization":{
@@ -68,5 +87,12 @@ payload = {
 
         
 rave = Rave(secret_key=os.getenv("RAVE_SECRET_KEY"), encryption_key=os.getenv("RAVE_ENCRYPTION_KEY"))
-response = rave.charge_card(payload)
-print(response)
+
+charge_response = rave.charge_card(payload)
+print(charge_response)
+
+validate_response = rave.validate_charge(charge_response["data"]["flw_ref"], "12345")
+print(validate_response)
+
+verify_response = rave.verify_transaction(charge_response["data"]["id"])
+print(verify_response)
