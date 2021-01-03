@@ -51,15 +51,19 @@ class Rave():
 
 
 payload = {
-    "card_number": "4556052704172643",
-    "cvv": "899",
-    "expiry_month":"1",
-    "expiry_year":"21",
+    "card_number": "5531886652142950",
+    "cvv": "564",
+    "expiry_month":"09",
+    "expiry_year":"32",
     "currency":"NGN",
-    "amount":"100",
+    "amount":"1000",
     "tx_ref":"MC-3243e",
     "fullname":"Yemi Desola",
-    "email":"user@flw.com"
+    "email":"user@flw.com",
+    "authorization":{
+      "mode":"pin",
+      "pin":"3310",
+   }
 }
 
         
