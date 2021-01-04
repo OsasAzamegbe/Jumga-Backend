@@ -5,6 +5,8 @@ from rest_framework.permissions import AllowAny
 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 
+from .utils import Rave, SECRET_KEY, ENCRYPTION_KEY
+
 
 #Test view for payments route
 @api_view(['POST'])
@@ -13,9 +15,33 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 def payments (request):
     try:
         data = request.data
-        return Response(data={"recieved": data}, status=status.HTTP_200_OK)
-    except:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        payload = {
+            "card_number": data["card_number"],
+            "cvv": data["cvv"],
+            "expiry_month": data["expiry_month"],
+            "expiry_year": data["expiry_year"],
+            "currency": data["currency"],
+            "amount": data["amount"],
+            "tx_ref": data["tx_ref"],
+            "fullname": data["fullname"],
+            "email": data["email"],
+            "redirect_url": "http://localhost:8000/admin"
+        }
+
+        rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
+        charge_response = rave.charge_card(payload)
+
+        return Response(data={
+            "status": "successful",
+            "message": "payment initiated successfully",
+            "data": charge_response
+        }, status=status.HTTP_202_ACCEPTED)
+    except KeyError as e:
+        return Response(data={
+            "status": "failed", 
+            "message": f'Payload is missing the following field: {e}',
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
