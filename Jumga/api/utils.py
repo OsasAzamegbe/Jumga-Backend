@@ -7,6 +7,9 @@ from pathlib import Path
 env_path = Path(__file__).resolve().parent.parent / 'Jumga/.env'
 load_dotenv(env_path, verbose=True)
 
+SECRET_KEY = os.getenv("RAVE_SECRET_KEY")
+ENCRYPTION_KEY = os.getenv("RAVE_ENCRYPTION_KEY")
+
 class Rave():    
 
     def __init__(self, secret_key: str, encryption_key: str) -> None: 
@@ -90,7 +93,7 @@ authorization = {
 payload["authorization"] = authorization
 
         
-rave = Rave(secret_key=os.getenv("RAVE_SECRET_KEY"), encryption_key=os.getenv("RAVE_ENCRYPTION_KEY"))
+rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
 
 charge_response = rave.charge_card(payload)
 print(charge_response)
