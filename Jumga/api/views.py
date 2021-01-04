@@ -12,7 +12,7 @@ from .utils import Rave, SECRET_KEY, ENCRYPTION_KEY
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
 @csrf_protect
-def payments (request):
+def card_payments (request):
     try:
         data = request.data
         payload = {
@@ -25,7 +25,7 @@ def payments (request):
             "tx_ref": data["tx_ref"],
             "fullname": data["fullname"],
             "email": data["email"],
-            "redirect_url": "http://localhost:8000/admin"
+            "redirect_url": data["redirect_url"]
         }
 
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
@@ -44,7 +44,7 @@ def payments (request):
             "message": "There was a problem",
             "data": charge_response
         }, status=status.HTTP_400_BAD_REQUEST)
-        
+
     except KeyError as e:
         return Response(data={
             "status": "failed", 

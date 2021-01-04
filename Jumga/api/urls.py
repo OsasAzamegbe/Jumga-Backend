@@ -18,6 +18,6 @@ from django.urls import path
 from api import views as api_views
 
 urlpatterns = [
-    path('payment', api_views.payments),
+    path('cardpayment', api_views.card_payments),
     path('getcsrf', api_views.get_csrf),
 ]
