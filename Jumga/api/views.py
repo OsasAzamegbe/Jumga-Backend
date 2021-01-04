@@ -31,11 +31,20 @@ def payments (request):
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
         charge_response = rave.charge_card(payload)
 
+        if charge_response and charge_response["status"] == "success":
+            return Response(data={
+                "status": "successful",
+                "message": "Payment initiated successfully",
+                "data": charge_response
+            }, status=status.HTTP_202_ACCEPTED)
+        
+        
         return Response(data={
-            "status": "successful",
-            "message": "payment initiated successfully",
+            "status": "error",
+            "message": "There was a problem",
             "data": charge_response
-        }, status=status.HTTP_202_ACCEPTED)
+        }, status=status.HTTP_400_BAD_REQUEST)
+        
     except KeyError as e:
         return Response(data={
             "status": "failed", 
