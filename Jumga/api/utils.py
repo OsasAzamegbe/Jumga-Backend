@@ -72,33 +72,33 @@ class Rave():
         return response.json()
 
 
-payload = {
-    "card_number": "5531886652142950",
-    "cvv": "564",
-    "expiry_month":"09",
-    "expiry_year":"32",
-    "currency":"USD",
-    "amount":"1000",
-    "tx_ref":"MC-3243y",
-    "fullname":"Yemi Desola",
-    "email":"user@flw.com",
-    "redirect_url": "http://localhost:8000/admin"
-}
+# payload = {
+#     "card_number": "5531886652142950",
+#     "cvv": "564",
+#     "expiry_month":"09",
+#     "expiry_year":"32",
+#     "currency":"USD",
+#     "amount":"1000",
+#     "tx_ref":"MC-3243y",
+#     "fullname":"Yemi Desola",
+#     "email":"user@flw.com",
+#     "redirect_url": "http://localhost:8000/admin"
+# }
 
-authorization = {
-    "mode":"pin",
-    "pin":"3310",
-}
+# authorization = {
+#     "mode":"pin",
+#     "pin":"3310",
+# }
 
-payload["authorization"] = authorization
+# payload["authorization"] = authorization
 
         
-rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
+# rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
 
-charge_response = rave.charge_card(payload)
-print(charge_response)
+# charge_response = rave.charge_card(payload)
+# print(charge_response)
 
-print(rave.verify_transaction(str(charge_response["data"]["id"])))
+# print(rave.verify_transaction(str(charge_response["data"]["id"])))
 
 # validate_response = rave.validate_charge(charge_response["data"]["flw_ref"], "12345")
 # print(validate_response)
