@@ -19,5 +19,6 @@ from api import views as api_views
 
 urlpatterns = [
     path('cardpayment', api_views.card_payments),
+    path('verifypayment', api_views.verify_payment),
     path('getcsrf', api_views.get_csrf),
 ]

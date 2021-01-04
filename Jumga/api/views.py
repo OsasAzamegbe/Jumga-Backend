@@ -12,7 +12,7 @@ from .utils import Rave, SECRET_KEY, ENCRYPTION_KEY
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
 @csrf_protect
-def card_payments (request):
+def card_payments (request, *args, **kwargs):
     try:
         data = request.data
         payload = {
@@ -27,6 +27,9 @@ def card_payments (request):
             "email": data["email"],
             "redirect_url": data["redirect_url"]
         }
+
+        if "authorization" in data:
+            payload["authorization"] = data["authorization"]
 
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
         charge_response = rave.charge_card(payload)
@@ -55,6 +58,40 @@ def card_payments (request):
 
 @api_view(['GET'])
 @permission_classes((AllowAny, ))
+@csrf_protect
+def verify_payment(request, *args, **kwargs):
+    try:
+        query_params = request.GET
+        rave = Rave(SECRET_KEY, ENCRYPTION_KEY)
+        verification_response = rave.verify_transaction(str(query_params["id"]))
+
+        assert verification_response["data"]["status"] == "successful"
+        assert verification_response["data"]["currency"] == query_params["currency"]
+        assert verification_response["data"]["tx_ref"] == query_params["txref"]
+        assert verification_response["data"]["charged_amount"] >= query_params["amount"]
+        return Response(data={
+            "status": "successful",
+            "message": "Payment verified",
+            "data": verification_response
+        }, status=status.HTTP_200_OK)
+
+    except AssertionError:
+        return Response(data={
+            "status": "failed",
+            "message": "Payment not verified",
+            "data": verification_response
+        }, status=status.HTTP_409_CONFLICT)
+
+    except KeyError:
+        return Response(data={
+            "status": "failed",
+            "message": "Check your query parameters. Bad request.",
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes((AllowAny, ))
 @ensure_csrf_cookie
 def get_csrf(request):
-    return Response(data={"success": "CSRF cookie set successfully."})
+    return Response(data={"message": "CSRF cookie set successfully."}, status=status.HTTP_200_OK)
