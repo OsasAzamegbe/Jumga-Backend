@@ -74,16 +74,20 @@ payload = {
     "cvv": "564",
     "expiry_month":"09",
     "expiry_year":"32",
-    "currency":"NGN",
+    "currency":"USD",
     "amount":"1000",
     "tx_ref":"MC-3243y",
     "fullname":"Yemi Desola",
     "email":"user@flw.com",
-    "authorization":{
-      "mode":"pin",
-      "pin":"3310",
-   }
+    "redirect_url": "http://localhost:8000/admin"
 }
+
+authorization = {
+    "mode":"pin",
+    "pin":"3310",
+}
+
+payload["authorization"] = authorization
 
         
 rave = Rave(secret_key=os.getenv("RAVE_SECRET_KEY"), encryption_key=os.getenv("RAVE_ENCRYPTION_KEY"))
@@ -91,8 +95,10 @@ rave = Rave(secret_key=os.getenv("RAVE_SECRET_KEY"), encryption_key=os.getenv("R
 charge_response = rave.charge_card(payload)
 print(charge_response)
 
-validate_response = rave.validate_charge(charge_response["data"]["flw_ref"], "12345")
-print(validate_response)
+print(rave.verify_transaction(str(charge_response["data"]["id"])))
 
-verify_response = rave.verify_transaction(charge_response["data"]["id"])
-print(verify_response)
+# validate_response = rave.validate_charge(charge_response["data"]["flw_ref"], "12345")
+# print(validate_response)
+
+# verify_response = rave.verify_transaction(charge_response["data"]["id"])
+# print(verify_response)
