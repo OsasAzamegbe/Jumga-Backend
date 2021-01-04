@@ -103,7 +103,7 @@ def verify_payment(request, *args, **kwargs):
         assert verification_response["data"]["status"] == "successful"
         assert verification_response["data"]["currency"] == query_params["currency"]
         assert verification_response["data"]["tx_ref"] == query_params["txref"]
-        assert verification_response["data"]["charged_amount"] >= query_params["amount"]
+        assert int(verification_response["data"]["charged_amount"]) >= int(query_params["amount"])
         return Response(data={
             "status": "successful",
             "message": "Payment verified",
