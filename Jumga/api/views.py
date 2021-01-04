@@ -8,7 +8,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from .utils import Rave, SECRET_KEY, ENCRYPTION_KEY
 
 
-#Test view for payments route
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
 @csrf_protect
@@ -39,7 +38,7 @@ def card_payments (request, *args, **kwargs):
                 "status": "successful",
                 "message": "Payment initiated successfully",
                 "data": charge_response
-            }, status=status.HTTP_202_ACCEPTED)
+            }, status=status.HTTP_200_OK)
         
         
         return Response(data={
@@ -54,6 +53,42 @@ def card_payments (request, *args, **kwargs):
             "message": f'Payload is missing the following field: {e}',
             "data": None
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+@csrf_protect
+def validate_payments (request, *args, **kwargs):
+    try:
+        data = request.data
+        flw_ref = data["flw_ref"]
+        otp = data["otp"]
+
+        rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
+        validation_response = rave.validate_charge(flw_ref, otp)
+
+        if validation_response and validation_response["status"] == "success":
+            return Response(data={
+                "status": "successful",
+                "message": "Payment validated successfully",
+                "data": validation_response
+            }, status=status.HTTP_200_OK)
+        
+        
+        return Response(data={
+            "status": "error",
+            "message": "There was a problem",
+            "data": validation_response
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except KeyError as e:
+        return Response(data={
+            "status": "failed", 
+            "message": f'Payload is missing the following field: {e}',
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['GET'])
