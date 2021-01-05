@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 class Transaction(models.Model):
-    transaction_id = models.CharField(max_length=255, unique=True)
+    transaction_id = models.CharField(max_length=255, unique=True, primary_key=True)
     flw_json = models.JSONField()
     sender = models.ForeignKey(
         User, 
@@ -35,10 +35,18 @@ class Transaction(models.Model):
 
 
 class Merchant(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     shop_name = models.CharField(max_length=255, default="", unique=True)
-    dispatch_rider = models.CharField(max_length=255, default="")
+    dispatch_rider = models.OneToOneField('DispatchRider', on_delete=models.CASCADE)
     revenue = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.shop_name}'
+
+
+class DispatchRider(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    revenue = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.user.username} Dispath Rider'
