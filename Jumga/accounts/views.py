@@ -46,10 +46,18 @@ def signup(request):
                 "message": "Email address is invalid.",
                 "data": None                
             }, status=status.HTTP_400_BAD_REQUEST)
+
         elif User.objects.filter(email=email).exists():
             return Response(data={
                 "status": "error", 
                 "message": "An Account with this email address already exists.",
+                "data": None                
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        elif User.objects.filter(username=username).exists():
+            return Response(data={
+                "status": "error", 
+                "message": "An Account with this username already exists.",
                 "data": None                
             }, status=status.HTTP_400_BAD_REQUEST)
 
