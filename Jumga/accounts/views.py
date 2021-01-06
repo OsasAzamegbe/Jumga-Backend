@@ -5,8 +5,11 @@ from rest_framework.permissions import AllowAny
 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.contrib.auth.models import User
+from django.core import serializers
 
 from .utils import validate_email, validate_password
+
+import json
 
 
 
@@ -53,20 +56,20 @@ def signup(request):
         # create user post validation
         user = User.objects.create(
             username=username,
-            password=password,
             first_name=first_name,
             last_name=last_name,
             email=email
         )
-
+        user.set_password(password)
         user.save()
 
-        user = dict(User.objects.get(username=username))
+        user = User.objects.get(username=username)
+        user_json = json.loads(serializers.serialize("json", [user, ]))
 
         return Response(data={
             "status": "successful", 
             "message": "Account created successfully.",
-            "data": user                
+            "data": user_json
         }, status=status.HTTP_201_CREATED)
 
 
