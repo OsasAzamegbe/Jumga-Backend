@@ -13,8 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from api import views as api_views
 
 urlpatterns = [
@@ -22,4 +21,5 @@ urlpatterns = [
     path('verifypayment', api_views.verify_payment),
     path('validatepayment', api_views.validate_payments),
     path('getcsrf', api_views.get_csrf),
+    path('auth/', include('accounts.urls')),
 ]
