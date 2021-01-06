@@ -49,7 +49,7 @@ def card_payments (request, *args, **kwargs):
 
     except KeyError as e:
         return Response(data={
-            "status": "failed", 
+            "status": "error", 
             "message": f'Payload is missing the following field: {e}',
             "data": None
         }, status=status.HTTP_400_BAD_REQUEST)
@@ -84,7 +84,7 @@ def validate_payments (request, *args, **kwargs):
 
     except KeyError as e:
         return Response(data={
-            "status": "failed", 
+            "status": "error", 
             "message": f'Payload is missing the following field: {e}',
             "data": None
         }, status=status.HTTP_400_BAD_REQUEST)
@@ -112,14 +112,14 @@ def verify_payment(request, *args, **kwargs):
 
     except AssertionError:
         return Response(data={
-            "status": "failed",
+            "status": "error",
             "message": "Payment not verified",
             "data": verification_response
         }, status=status.HTTP_409_CONFLICT)
 
     except KeyError:
         return Response(data={
-            "status": "failed",
+            "status": "error",
             "message": "Check your query parameters. Bad request.",
             "data": None
         }, status=status.HTTP_400_BAD_REQUEST)
