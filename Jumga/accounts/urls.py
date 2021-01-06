@@ -19,4 +19,5 @@ from . import views as accounts_views
 urlpatterns = [
     path('signup', accounts_views.signup),
     path('login', accounts_views.login),
+    path('checkauthenticated', accounts_views.check_authenticated),
 ]

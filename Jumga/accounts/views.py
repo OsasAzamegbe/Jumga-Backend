@@ -119,3 +119,33 @@ def login(request, *args, **kwargs):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+@csrf_protect
+def check_authenticated(request, *args, **kwargs):
+    try:
+        is_authenticated = User.is_authenticated
+
+        if is_authenticated:
+            return Response(data={
+                "status": "successful", 
+                "message": "User is authenticated",
+                "data": {
+                    "isAuthenticated": True
+                }
+            }, status=status.HTTP_200_OK)
+        
+        return Response(data={
+            "status": "error", 
+            "message": "User is not authenticated",
+            "data": {
+                    "isAuthenticated": False
+                }
+        }, status=status.HTTP_401_UNAUTHORIZED)
+
+    except:
+        return Response(data={
+            "status": "error", 
+            "message": "Internal Server Error",
+            "data": None
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
