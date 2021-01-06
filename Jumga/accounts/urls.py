@@ -17,5 +17,6 @@ from django.urls import path
 from . import views as accounts_views
 
 urlpatterns = [
-    path('signup', accounts_views.signup)
+    path('signup', accounts_views.signup),
+    path('login', accounts_views.login),
 ]

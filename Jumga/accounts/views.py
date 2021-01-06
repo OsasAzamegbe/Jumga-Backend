@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.contrib.auth.models import User
+from django.contrib import auth
 from django.core import serializers
 
 from .utils import validate_email, validate_password
@@ -16,7 +17,7 @@ import json
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
 @csrf_protect
-def signup(request):
+def signup(request, *args, **kwargs):
     try:
         data = request.data
         username = data["username"]
@@ -87,3 +88,34 @@ def signup(request):
             "message": f'Payload is missing the following field: {e}',
             "data": None
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+@csrf_protect
+def login(request, *args, **kwargs):
+    try:
+        data = request.data
+        username = data["username"]
+        password = data["password"]
+
+        user = auth.authenticate(username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return Response(data={
+                "status": "successful", 
+                "message": "User logged in successfully.",
+                "data": None
+            }, status=status.HTTP_201_CREATED)
+        
+        raise KeyError
+
+    except KeyError:
+        return Response(data={
+            "status": "error", 
+            "message": "Username or password Incorrect",
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
