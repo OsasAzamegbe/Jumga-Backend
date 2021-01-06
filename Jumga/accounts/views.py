@@ -107,7 +107,7 @@ def login(request, *args, **kwargs):
                 "status": "successful", 
                 "message": "User logged in successfully.",
                 "data": None
-            }, status=status.HTTP_201_CREATED)
+            }, status=status.HTTP_200_OK)
         
         raise KeyError
 
@@ -148,4 +148,23 @@ def check_authenticated(request, *args, **kwargs):
             "message": "Internal Server Error",
             "data": None
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    
+@api_view(['POST'])
+def logout(request, *args, **kwargs):
+    try:
+        auth.logout(request)
+        return Response(data={
+            "status": "successful", 
+            "message": "User has been logged out",
+            "data": None
+        }, status=status.HTTP_200_OK)
+
+    except:
+        return Response(data={
+            "status": "error", 
+            "message": "User could not be logged out",
+            "data": None
+        }, status=status.HTTP_304_NOT_MODIFIED)
+
 
