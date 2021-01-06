@@ -64,10 +64,10 @@ def signup(request):
         user = dict(User.objects.get(username=username))
 
         return Response(data={
-                "status": "successful", 
-                "message": "Account created successfully.",
-                "data": user                
-            }, status=status.HTTP_201_CREATED)
+            "status": "successful", 
+            "message": "Account created successfully.",
+            "data": user                
+        }, status=status.HTTP_201_CREATED)
 
 
     except KeyError as e:
