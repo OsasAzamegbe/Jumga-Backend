@@ -71,37 +71,9 @@ class Rave():
         response = requests.get(endpoint, headers=self.headers)
         return response.json()
 
+    
+    def get_all_banks(self, country: str) -> dict:
+        endpoint = f"https://api.flutterwave.com/v3/banks/{country}"
 
-# payload = {
-#     "card_number": "5531886652142950",
-#     "cvv": "564",
-#     "expiry_month":"09",
-#     "expiry_year":"32",
-#     "currency":"USD",
-#     "amount":"1000",
-#     "tx_ref":"MC-3243y",
-#     "fullname":"Yemi Desola",
-#     "email":"user@flw.com",
-#     "redirect_url": "http://localhost:8000/admin"
-# }
-
-# authorization = {
-#     "mode":"pin",
-#     "pin":"3310",
-# }
-
-# payload["authorization"] = authorization
-
-        
-# rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
-
-# charge_response = rave.charge_card(payload)
-# print(charge_response)
-
-# print(rave.verify_transaction(str(charge_response["data"]["id"])))
-
-# validate_response = rave.validate_charge(charge_response["data"]["flw_ref"], "12345")
-# print(validate_response)
-
-# verify_response = rave.verify_transaction(charge_response["data"]["id"])
-# print(verify_response)
+        response = requests.get(endpoint, headers=self.headers)
+        return response.json()
