@@ -5,8 +5,8 @@ Flutterwave market place challenge. Working on the payment system for an E-Marke
 ## System Design
 
 # Data Models
-[alt Jumga User Accounts Models](https://github.com/OsasAzamegbe/Jumga-Backend/blob/main/images/JumgaDataModels1.png?raw=true)
+![alt Jumga User Accounts Models](https://github.com/OsasAzamegbe/Jumga-Backend/blob/main/images/JumgaDataModels1.png?raw=true)
 ## User Accounts Models
 
-[alt Jumga Transaction Model](https://github.com/OsasAzamegbe/Jumga-Backend/blob/main/images/JumgaDataModels2.png?raw=true)
+![alt Jumga Transaction Model](https://github.com/OsasAzamegbe/Jumga-Backend/blob/main/images/JumgaDataModels2.png?raw=true)
 ## Transaction Model
