@@ -125,6 +125,49 @@ def verify_payment(request, *args, **kwargs):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+@csrf_protect
+def ng_bank_payment (request, *args, **kwargs):
+    try:
+        data = request.data
+        payload = {
+            "account_bank": data["account_bank"],
+            "currency": data["currency"],
+            "amount": data["amount"],
+            "tx_ref": data["tx_ref"],
+            "fullname": data["fullname"],
+            "email": data["email"],
+            "account_bank": data["account_bank"]
+        }
+
+        rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
+        charge_response = rave.charge_bank_ng(payload)
+
+        if charge_response and charge_response["status"] == "success":
+            return Response(data={
+                "status": "successful",
+                "message": "Payment initiated successfully",
+                "data": charge_response
+            }, status=status.HTTP_200_OK)
+        
+        
+        return Response(data={
+            "status": "error",
+            "message": "There was a problem",
+            "data": charge_response
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except KeyError as e:
+        return Response(data={
+            "status": "error", 
+            "message": f'Payload is missing the following field: {e}',
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 @api_view(['GET'])
 @permission_classes((AllowAny, ))
 @ensure_csrf_cookie

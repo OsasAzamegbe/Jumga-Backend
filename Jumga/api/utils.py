@@ -92,7 +92,6 @@ class Rave():
 #    "account_number":"0690000031",
 #    "currency":"NGN",
 #    "email":"user@flw.com",
-#    "phone_number":"0902620185",
 #    "fullname":"Yemi Desola"
 # }
 

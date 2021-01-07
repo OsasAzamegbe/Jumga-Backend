@@ -20,6 +20,7 @@ urlpatterns = [
     path('cardpayment', api_views.card_payments),
     path('verifypayment', api_views.verify_payment),
     path('validatepayment', api_views.validate_payments),
+    path('bankpayment', api_views.ng_bank_payment),
     path('getcsrf', api_views.get_csrf),
     path('auth/', include('accounts.urls')),
 ]
