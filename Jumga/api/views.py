@@ -215,18 +215,6 @@ def mpesa_payment (request, *args, **kwargs):
 def ghana_payment (request, *args, **kwargs):
     try:
         data = request.data
-
-        {
-   "tx_ref":"MC-158523s09v5050e8",
-   "amount":"150",
-   "currency":"GHS",
-   "voucher":"143256743",
-   "network":"MTN",
-   "email":"user@gmail.com",
-   "phone_number":"054709929220",
-   "fullname":"John Madakin",
-   }
-}
         payload = {
             "currency": data["currency"],
             "amount": data["amount"],
