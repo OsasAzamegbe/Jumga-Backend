@@ -84,6 +84,13 @@ class Rave():
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(payload))
         return response.json()
 
+    def charge_mpesa(self, payload: dict) -> dict:
+        endpoint = "https://api.flutterwave.com/v3/charges?type=mpesa"
+
+        response = requests.post(endpoint, headers=self.headers, data=json.dumps(payload))
+        return response.json()
+    
+
 
 # payload = {
 #    "tx_ref":"MC-1585230ew9v5050e9",
