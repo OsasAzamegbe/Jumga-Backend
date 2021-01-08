@@ -102,6 +102,15 @@ class Rave():
 #    "fullname":"Yemi Desola"
 # }
 
+# mpesa_payload = {
+#    "tx_ref":"MC-15852113s09v5050e8",
+#    "amount":"1500",
+#    "currency":"KES",
+#    "email":"user@flw.com",
+#    "phone_number":"25454709929220",
+#    "fullname":"John Madakin"
+# }
+
 # rave = Rave(SECRET_KEY, ENCRYPTION_KEY)
 # bank_charge = rave.charge_bank_ng(payload)
 # print(bank_charge, "\n\n\n")
