@@ -89,6 +89,12 @@ class Rave():
 
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(payload))
         return response.json()
+
+    def charge_ghana_mobile(self, payload: dict) -> dict:
+        endpoint = "https://api.flutterwave.com/v3/charges?type=mobile_money_ghana"
+
+        response = requests.post(endpoint, headers=self.headers, data=json.dumps(payload))
+        return response.json()
     
 
 
