@@ -173,6 +173,7 @@ def ng_bank_payment (request, *args, **kwargs):
 @csrf_protect
 def mpesa_payment (request, *args, **kwargs):
     try:
+        data = request.data
         payload = {
             "currency": data["currency"],
             "amount": data["amount"],
@@ -184,6 +185,63 @@ def mpesa_payment (request, *args, **kwargs):
 
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
         charge_response = rave.charge_mpesa(payload)
+
+        if charge_response and charge_response["status"] == "success":
+            return Response(data={
+                "status": "successful",
+                "message": "Payment initiated successfully",
+                "data": charge_response
+            }, status=status.HTTP_200_OK)
+        
+        
+        return Response(data={
+            "status": "error",
+            "message": "There was a problem",
+            "data": charge_response
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except KeyError as e:
+        return Response(data={
+            "status": "error", 
+            "message": f'Payload is missing the following field: {e}',
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+@csrf_protect
+def ghana_payment (request, *args, **kwargs):
+    try:
+        data = request.data
+
+        {
+   "tx_ref":"MC-158523s09v5050e8",
+   "amount":"150",
+   "currency":"GHS",
+   "voucher":"143256743",
+   "network":"MTN",
+   "email":"user@gmail.com",
+   "phone_number":"054709929220",
+   "fullname":"John Madakin",
+   }
+}
+        payload = {
+            "currency": data["currency"],
+            "amount": data["amount"],
+            "tx_ref": data["tx_ref"],
+            "fullname": data["fullname"],
+            "email": data["email"],
+            "phone_number": data["phone_number"],
+            "network": data["network"]
+        }
+
+        if payload["network"].lower() == "vodafone":
+            payload["voucher"] = data["voucher"]
+
+        rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
+        charge_response = rave.charge_ghana_mobile(payload)
 
         if charge_response and charge_response["status"] == "success":
             return Response(data={

@@ -22,6 +22,7 @@ urlpatterns = [
     path('validatepayment', api_views.validate_payments),
     path('bankpayment', api_views.ng_bank_payment),
     path('mpesa', api_views.mpesa_payment),
+    path('ghanamobile', api_views.ghana_payment),
     path('getcsrf', api_views.get_csrf),
     path('auth/', include('accounts.urls')),
 ]
