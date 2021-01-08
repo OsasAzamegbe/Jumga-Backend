@@ -133,7 +133,7 @@ def ng_bank_payment (request, *args, **kwargs):
     try:
         data = request.data
         payload = {
-            "account_bank": data["account_bank"],
+            "account_number": data["account_number"],
             "currency": data["currency"],
             "amount": data["amount"],
             "tx_ref": data["tx_ref"],
@@ -144,6 +144,46 @@ def ng_bank_payment (request, *args, **kwargs):
 
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
         charge_response = rave.charge_bank_ng(payload)
+
+        if charge_response and charge_response["status"] == "success":
+            return Response(data={
+                "status": "successful",
+                "message": "Payment initiated successfully",
+                "data": charge_response
+            }, status=status.HTTP_200_OK)
+        
+        
+        return Response(data={
+            "status": "error",
+            "message": "There was a problem",
+            "data": charge_response
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except KeyError as e:
+        return Response(data={
+            "status": "error", 
+            "message": f'Payload is missing the following field: {e}',
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+@csrf_protect
+def mpesa_payment (request, *args, **kwargs):
+    try:
+        payload = {
+            "currency": data["currency"],
+            "amount": data["amount"],
+            "tx_ref": data["tx_ref"],
+            "fullname": data["fullname"],
+            "email": data["email"],
+            "phone_number": data["phone_number"]
+        }
+
+        rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
+        charge_response = rave.charge_mpesa(payload)
 
         if charge_response and charge_response["status"] == "success":
             return Response(data={
