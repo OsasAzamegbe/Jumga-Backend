@@ -38,7 +38,9 @@ class Merchant(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     shop_name = models.CharField(max_length=255, default="", unique=True)
     dispatch_rider = models.OneToOneField('DispatchRider', on_delete=models.CASCADE)
-    revenue = models.IntegerField(default=0)
+    current_revenue = models.IntegerField(default=0)
+    total_revenue = models.IntegerField(default=0)
+    withdrawn_revenue = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.shop_name}'
@@ -46,7 +48,9 @@ class Merchant(models.Model):
 
 class DispatchRider(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    revenue = models.IntegerField(default=0)
+    current_revenue = models.IntegerField(default=0)
+    total_revenue = models.IntegerField(default=0)
+    withdrawn_revenue = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.user.username} Dispath Rider'
