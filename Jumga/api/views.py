@@ -270,7 +270,7 @@ def payouts_transfer(request, *args, **kwargs):
         if "destination" not in query_params:
             return Response(data={
                 "status": "error",
-                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank'].",
+                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank, mpesa'].",
                 "data": None
             }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -284,6 +284,18 @@ def payouts_transfer(request, *args, **kwargs):
                 "account_number": data["account_number"],
                 "narration": data["narration"],
                 "callback_url": data["callback_url"]
+            }
+
+
+        if query_params["destination"] == "mpesa":
+            payload = {
+                "currency": "KES",
+                "amount": data["amount"],
+                "reference": data["reference"],
+                "account_bank": "MPS",
+                "account_number": data["account_number"],
+                "narration": data["narration"],
+                "beneficiary_name": data["beneficiary_name"]
             }
 
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
