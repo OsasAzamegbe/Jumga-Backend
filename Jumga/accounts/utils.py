@@ -12,4 +12,10 @@ def validate_password(password):
     return regex.match(password)
 
 class CustomError(Exception):
-    pass
+    def __init__(self, message=None, *args):
+        if message:
+            self.message = message
+        super().__init__(args)
+
+    def __str__ (self):
+        return repr(self.message)
