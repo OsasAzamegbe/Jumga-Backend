@@ -1,4 +1,6 @@
 import re
+from api.models import DispatchRider
+import random
 
 
 def validate_email(email):
@@ -19,3 +21,10 @@ class CustomError(Exception):
 
     def __str__ (self):
         return repr(self.message)
+
+
+def assign_dispatch_rider():
+    dispatch_riders = DispatchRider.objects.all()
+    if dispatch_riders:
+        return random.choice(dispatch_riders)
+    return None
