@@ -8,7 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.core import serializers
 
-from .utils import validate_email, validate_password
+from .utils import validate_email, validate_password, CustomError
+from ..api.models import Merchant, DispatchRider
 
 import json
 
@@ -34,18 +35,39 @@ def signup(request, *args, **kwargs):
                     "data": None
                 }, status=status.HTTP_400_BAD_REQUEST)
 
+            # get user object from user_id
+            user_id = data["user_id"]
+            user = User.objects.get(pk=user_id)
+            if not user:
+                raise CustomError("No user with that user_id exists.")
+
+            # ensure no dispatch or merchant account exists for user
+            if user.dispatchrider or user.merchant:
+                raise CustomError("User cannot create a merchant account.")
+
             if account_type == "merchant":
                 #signup merchant
-                pass
+                shop_name = data["shop_name"]
+                merchant = Merchant.objects.create(
+                    user=user, shop_name=shop_name,
+                    dispatch_rider=None
+                )
+                merchant.save()
+                
             elif account_type == "dispatch_rider":
                 #signup dispatch_rider
-                pass
+                dispatch_rider = Merchant.objects.create(user=user)
+                dispatch_rider.save()
             else:
                 return Response(data={
                     "status": "error", 
                     "message": f"Invalid value for query parameter 'type'. Possible values are: {possible_types}.",
                     "data": None
                 }, status=status.HTTP_400_BAD_REQUEST)
+
+            # get updated user object with merchant or dispatch rider object added to it
+            user = User.objects.get(pk=user_id)
+            
         else:
             #signup plain user
             username = data["username"]
@@ -99,9 +121,10 @@ def signup(request, *args, **kwargs):
             )
             user.set_password(password)
             user.save()
+            # get saved user object from DB
             user = User.objects.get(username=username)
 
-        # serialize signup user for json response 
+        # serialize new user object for json response 
         user_json = json.loads(serializers.serialize("json", [user, ]))
         del user_json["password"]
 
@@ -116,6 +139,13 @@ def signup(request, *args, **kwargs):
         return Response(data={
             "status": "error", 
             "message": f'Payload is missing the following field: {e}',
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except CustomError as e:
+        return Response(data={
+            "status": "error", 
+            "message": e,
             "data": None
         }, status=status.HTTP_400_BAD_REQUEST)
 
