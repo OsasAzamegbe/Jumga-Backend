@@ -41,6 +41,7 @@ class Merchant(models.Model):
     current_revenue = models.IntegerField(default=0)
     total_revenue = models.IntegerField(default=0)
     withdrawn_revenue = models.IntegerField(default=0)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.shop_name}'
