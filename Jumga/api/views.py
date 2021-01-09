@@ -270,11 +270,11 @@ def payouts_transfer(request, *args, **kwargs):
         if "destination" not in query_params:
             return Response(data={
                 "status": "error",
-                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank, mpesa, gh_mobile'].",
+                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank, mpesa, gh_mobile, gh_bank'].",
                 "data": None
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if query_params["destination"] == "ng_bank":
+        if query_params["destination"].lower() == "ng_bank":
             payload = {
                 "debit_currency": data["debit_currency"],
                 "currency": data["currency"],
@@ -286,7 +286,7 @@ def payouts_transfer(request, *args, **kwargs):
                 "callback_url": data["callback_url"]
             }
 
-        if query_params["destination"] == "mpesa":
+        if query_params["destination"].lower() == "mpesa":
             payload = {
                 "currency": "KES",
                 "amount": data["amount"],
@@ -297,7 +297,7 @@ def payouts_transfer(request, *args, **kwargs):
                 "beneficiary_name": data["beneficiary_name"]
             }
 
-        if query_params["destination"] == "gh_mobile":
+        if query_params["destination"].lower() == "gh_mobile":
             payload = {
                 "currency": "GHS",
                 "amount": data["amount"],
@@ -307,6 +307,19 @@ def payouts_transfer(request, *args, **kwargs):
                 "narration": data["narration"],
                 "beneficiary_name": data["beneficiary_name"]
             }
+
+        if query_params["destination"].lower() == "gh_bank":
+                payload = {
+                    "currency": "GHS",
+                    "amount": data["amount"],
+                    "reference": data["reference"],
+                    "callback_url": data["callback_url"],
+                    "destination_branch_code": data["destination_branch_code"],
+                    "account_bank": data["account_bank"],
+                    "account_number": data["account_number"],
+                    "narration": data["narration"],
+                    "beneficiary_name": data["beneficiary_name"]
+                }
 
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
         payout_response = rave.payouts_transfer(payload)
