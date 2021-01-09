@@ -265,6 +265,7 @@ def payouts_transfer(request, *args, **kwargs):
     try:
         data = request.data
         payload = {}
+        possible_destination = "['ng_bank', 'mpesa', 'gh_mobile', 'gh_bank', 'uk_bank']"
 
         try:
             query_params = request.GET
@@ -272,7 +273,7 @@ def payouts_transfer(request, *args, **kwargs):
         except KeyError as e:
             return Response(data={
                 "status": "error",
-                "message": f"Query parameters is missing the field {e}. Possible values are: ['ng_bank', 'mpesa', 'gh_mobile', 'gh_bank'].",
+                "message": f"Query parameters is missing the field {e}. Possible values are: {possible_destination}.",
                 "data": None
             }, status=status.HTTP_400_BAD_REQUEST)      
 
@@ -318,11 +319,33 @@ def payouts_transfer(request, *args, **kwargs):
                 "account_number": data["account_number"],
                 "narration": data["narration"],
                 "beneficiary_name": data["beneficiary_name"]
-            }        
+            }
+        elif destination == "uk_bank":
+            payload = {
+                "currency": data["currency"],
+                "narration": data["narration"],
+                "amount": data["amount"],
+                "reference": data["reference"],
+                "beneficiary_name": data["beneficiary_name"],
+                "meta": [
+                    {
+                        "AccountNumber": data["AccountNumber"],
+                        "RoutingNumber": data["RoutingNumber"],
+                        "SwiftCode": data["SwiftCode"],
+                        "BankName": data["BankName"],
+                        "BeneficiaryName": data["beneficiary_name"],
+                        "BeneficiaryCountry": data["BeneficiaryCountry"],
+                        "PostalCode": data["PostalCode"],
+                        "StreetNumber": data["StreetNumber"],
+                        "StreetName": data["StreetName"],
+                        "City": data["City"]
+                    }
+                ]
+            }           
         else:
             return Response(data={
                 "status": "error",
-                "message": "Invalid value for query parameter 'destination'. Possible values are: ['ng_bank', 'mpesa', 'gh_mobile', 'gh_bank'].",
+                "message": f"Invalid value for query parameter 'destination'. Possible values are: {possible_destination}.",
                 "data": None
             }, status=status.HTTP_400_BAD_REQUEST)
 
