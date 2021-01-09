@@ -10,3 +10,6 @@ def validate_password(password):
     regex = re.compile("^(?=.*[0-9])(?=.*[A-Z])(?=.*[!@#$%^&*/\\():-~`{}[\]])[a-zA-Z0-9!@#$%^&*/\\():-~`{}[\]]{8,100}$")
 
     return regex.match(password)
+
+class CustomError(Exception):
+    pass
