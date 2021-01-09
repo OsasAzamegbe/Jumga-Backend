@@ -20,60 +20,90 @@ import json
 def signup(request, *args, **kwargs):
     try:
         data = request.data
-        username = data["username"]
-        email = data["email"]
-        first_name = data["first_name"]
-        last_name = data["last_name"]
-        password = data["password"]
-        password_confirm = data["password_confirm"]
+        query_params = request.GET
 
-        # validation checks
-        if not validate_password(password):
-            return Response(data={
-                "status": "error", 
-                "message": "Password must be 8 - 100 characters long and must contain at least: one uppercase letter, one digit and one special character.",
-                "data": None                
-            }, status=status.HTTP_400_BAD_REQUEST)
-        elif password != password_confirm:
-            return Response(data={
-                "status": "error", 
-                "message": "Passwords do not match.",
-                "data": None                
-            }, status=status.HTTP_400_BAD_REQUEST)
+        if query_params:
+            # validate query parameters
+            try:
+                possible_types = "['merchant', 'dispatch_rider']"
+                account_type = query_params["type"].lower()
+            except KeyError as e:
+                return Response(data={
+                    "status": "error", 
+                    "message": f"Query parameters is missing the field {e}. Possible values are: {possible_types}.",
+                    "data": None
+                }, status=status.HTTP_400_BAD_REQUEST)
 
-        if not validate_email(email):
-            return Response(data={
-                "status": "error", 
-                "message": "Email address is invalid.",
-                "data": None                
-            }, status=status.HTTP_400_BAD_REQUEST)
+            if account_type == "merchant":
+                #signup merchant
+                pass
+            elif account_type == "dispatch_rider":
+                #signup dispatch_rider
+                pass
+            else:
+                return Response(data={
+                    "status": "error", 
+                    "message": f"Invalid value for query parameter 'type'. Possible values are: {possible_types}.",
+                    "data": None
+                }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            #signup plain user
+            username = data["username"]
+            email = data["email"]
+            first_name = data["first_name"]
+            last_name = data["last_name"]
+            password = data["password"]
+            password_confirm = data["password_confirm"]
 
-        elif User.objects.filter(email=email).exists():
-            return Response(data={
-                "status": "error", 
-                "message": "An Account with this email address already exists.",
-                "data": None                
-            }, status=status.HTTP_400_BAD_REQUEST)
+            # validation checks
+            if not validate_password(password):
+                return Response(data={
+                    "status": "error", 
+                    "message": "Password must be 8 - 100 characters long and must contain at least: one uppercase letter, one digit and one special character.",
+                    "data": None                
+                }, status=status.HTTP_400_BAD_REQUEST)
+            elif password != password_confirm:
+                return Response(data={
+                    "status": "error", 
+                    "message": "Passwords do not match.",
+                    "data": None                
+                }, status=status.HTTP_400_BAD_REQUEST)
 
-        elif User.objects.filter(username=username).exists():
-            return Response(data={
-                "status": "error", 
-                "message": "An Account with this username already exists.",
-                "data": None                
-            }, status=status.HTTP_400_BAD_REQUEST)
+            if not validate_email(email):
+                return Response(data={
+                    "status": "error", 
+                    "message": "Email address is invalid.",
+                    "data": None                
+                }, status=status.HTTP_400_BAD_REQUEST)
 
-        # create user post validation
-        user = User.objects.create(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email
-        )
-        user.set_password(password)
-        user.save()
+            elif User.objects.filter(email=email).exists():
+                return Response(data={
+                    "status": "error", 
+                    "message": "An Account with this email address already exists.",
+                    "data": None                
+                }, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.get(username=username)
+            elif User.objects.filter(username=username).exists():
+                return Response(data={
+                    "status": "error", 
+                    "message": "An Account with this username already exists.",
+                    "data": None                
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            # create user post validation
+            user = User.objects.create(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email
+            )
+            user.set_password(password)
+            user.save()
+            user = User.objects.get(username=username)
+
+        # serialize signup user for json response 
         user_json = json.loads(serializers.serialize("json", [user, ]))
+        del user_json["password"]
 
         return Response(data={
             "status": "successful", 
