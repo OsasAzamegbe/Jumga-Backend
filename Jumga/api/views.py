@@ -254,6 +254,53 @@ def ghana_payment (request, *args, **kwargs):
 
 
 
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+@csrf_protect
+def payouts_transfer(request, *args, **kwargs):
+    try:
+        data = request.data
+        query_params = request.GET
+        payload = {}
+
+        if query_params["destination"] == "ng_bank":
+            payload = {
+                "debit_currency": data["debit_currency"],
+                "currency": data["currency"],
+                "amount": data["amount"],
+                "reference": data["reference"],
+                "account_bank": data["account_bank"],
+                "account_number": data["account_number"],
+                "narration": data["narration"],
+                "callback_url": data["callback_url"]
+            }
+
+        rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
+        payout_response = rave.payouts_transfer(payload)
+
+        if payout_response and payout_response["status"] == "success":
+            return Response(data={
+                "status": "successful",
+                "message": "Payout initiated successfully",
+                "data": payout_response
+            }, status=status.HTTP_200_OK)
+        
+        
+        return Response(data={
+            "status": "error",
+            "message": "There was a problem",
+            "data": payout_response
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except KeyError as e:
+        return Response(data={
+            "status": "error", 
+            "message": f'Payload is missing the following field: {e}',
+            "data": None
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 @api_view(['GET'])
 @permission_classes((AllowAny, ))
 @ensure_csrf_cookie
