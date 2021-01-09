@@ -270,7 +270,7 @@ def payouts_transfer(request, *args, **kwargs):
         if "destination" not in query_params:
             return Response(data={
                 "status": "error",
-                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank, mpesa'].",
+                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank, mpesa, gh_mobile'].",
                 "data": None
             }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -286,13 +286,23 @@ def payouts_transfer(request, *args, **kwargs):
                 "callback_url": data["callback_url"]
             }
 
-
         if query_params["destination"] == "mpesa":
             payload = {
                 "currency": "KES",
                 "amount": data["amount"],
                 "reference": data["reference"],
                 "account_bank": "MPS",
+                "account_number": data["account_number"],
+                "narration": data["narration"],
+                "beneficiary_name": data["beneficiary_name"]
+            }
+
+        if query_params["destination"] == "gh_mobile":
+            payload = {
+                "currency": "GHS",
+                "amount": data["amount"],
+                "reference": data["reference"],
+                "account_bank": data["account_bank"],
                 "account_number": data["account_number"],
                 "narration": data["narration"],
                 "beneficiary_name": data["beneficiary_name"]
