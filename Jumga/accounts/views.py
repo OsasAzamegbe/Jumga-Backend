@@ -7,9 +7,10 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 
 from .utils import validate_email, validate_password, CustomError
-from ..api.models import Merchant, DispatchRider
+from api.models import Merchant, DispatchRider
 
 import json
 
@@ -42,12 +43,15 @@ def signup(request, *args, **kwargs):
                 raise CustomError("No user with that user_id exists.")
 
             # ensure no dispatch or merchant account exists for user
-            if user.dispatchrider or user.merchant:
+            try:
+                user.dispatchrider or user.merchant
                 raise CustomError("User cannot create a merchant account.")
+            except ObjectDoesNotExist:
+                pass
 
             if account_type == "merchant":
                 #signup merchant
-                shop_name = data["shop_name"]
+                shop_name = data["shop_name"].lower()
                 merchant = Merchant.objects.create(
                     user=user, shop_name=shop_name,
                     dispatch_rider=None
@@ -56,7 +60,7 @@ def signup(request, *args, **kwargs):
                 
             elif account_type == "dispatch_rider":
                 #signup dispatch_rider
-                dispatch_rider = Merchant.objects.create(user=user)
+                dispatch_rider = DispatchRider.objects.create(user=user)
                 dispatch_rider.save()
             else:
                 return Response(data={
@@ -125,13 +129,13 @@ def signup(request, *args, **kwargs):
             user = User.objects.get(username=username)
 
         # serialize new user object for json response 
-        user_json = json.loads(serializers.serialize("json", [user, ]))
-        del user_json["password"]
+        user_dict = json.loads(serializers.serialize("json", [user, ]))
+        # del user_dict[0]["fields"]["password"]
 
         return Response(data={
             "status": "successful", 
             "message": "Account created successfully.",
-            "data": user_json
+            "data": user_dict
         }, status=status.HTTP_201_CREATED)
 
 
@@ -145,7 +149,7 @@ def signup(request, *args, **kwargs):
     except CustomError as e:
         return Response(data={
             "status": "error", 
-            "message": e,
+            "message": str(e),
             "data": None
         }, status=status.HTTP_400_BAD_REQUEST)
 
