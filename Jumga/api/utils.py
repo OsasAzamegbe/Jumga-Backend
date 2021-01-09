@@ -96,6 +96,12 @@ class Rave():
         response = requests.post(endpoint, headers=self.headers, data=json.dumps(payload))
         return response.json()
     
+    def payouts_transfer(self, payload: dict) -> dict:
+        endpoint = "https://api.flutterwave.com/v3/transfers"
+
+        response = requests.post(endpoint, headers=self.headers, data=json.dumps(payload))
+        return response.json()
+    
 
 
 # payload = {
