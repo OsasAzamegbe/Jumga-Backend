@@ -9,7 +9,7 @@ from django.contrib import auth
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 
-from .utils import validate_email, validate_password, CustomError
+from .utils import validate_email, validate_password, CustomError, assign_dispatch_rider
 from api.models import Merchant, DispatchRider
 
 import json
@@ -23,6 +23,9 @@ def signup(request, *args, **kwargs):
     try:
         data = request.data
         query_params = request.GET
+
+        # initialize merchant and dispatch response object as None
+        merchant_json = dispatch_json = None
 
         if query_params:
             # validate query parameters
@@ -40,12 +43,12 @@ def signup(request, *args, **kwargs):
             user_id = data["user_id"]
             user = User.objects.get(pk=user_id)
             if not user:
-                raise CustomError("No user with that user_id exists.")
+                raise CustomError("User does not exist.")
 
             # ensure no dispatch or merchant account exists for user
             try:
                 user.dispatchrider or user.merchant
-                raise CustomError("User cannot create a merchant account.")
+                raise CustomError("User cannot create an extra account.")
             except ObjectDoesNotExist:
                 pass
 
@@ -54,24 +57,26 @@ def signup(request, *args, **kwargs):
                 shop_name = data["shop_name"].lower()
                 merchant = Merchant.objects.create(
                     user=user, shop_name=shop_name,
-                    dispatch_rider=None
+                    dispatch_rider=assign_dispatch_rider()
                 )
                 merchant.save()
+
+                merchant = Merchant.objects.get(user=user)
+                merchant_json = json.loads(serializers.serialize("json", [merchant, ]))[0]               
                 
             elif account_type == "dispatch_rider":
                 #signup dispatch_rider
                 dispatch_rider = DispatchRider.objects.create(user=user)
                 dispatch_rider.save()
+
+                dispatch = DispatchRider.objects.get(user=user)
+                dispatch_json = json.loads(serializers.serialize("json", [dispatch, ]))[0]
             else:
                 return Response(data={
                     "status": "error", 
                     "message": f"Invalid value for query parameter 'type'. Possible values are: {possible_types}.",
                     "data": None
-                }, status=status.HTTP_400_BAD_REQUEST)
-
-            # get updated user object with merchant or dispatch rider object added to it
-            user = User.objects.get(pk=user_id)
-            
+                }, status=status.HTTP_400_BAD_REQUEST)            
         else:
             #signup plain user
             username = data["username"]
@@ -129,13 +134,17 @@ def signup(request, *args, **kwargs):
             user = User.objects.get(username=username)
 
         # serialize new user object for json response 
-        user_dict = json.loads(serializers.serialize("json", [user, ]))
-        # del user_dict[0]["fields"]["password"]
+        user_dict = json.loads(serializers.serialize("json", [user, ]))[0]
+        del user_dict["fields"]["password"]
 
         return Response(data={
             "status": "successful", 
             "message": "Account created successfully.",
-            "data": user_dict
+            "data": {
+                "user": user_dict,
+                "merchant": merchant_json,
+                "dispatch_rider": dispatch_json
+            }
         }, status=status.HTTP_201_CREATED)
 
 
