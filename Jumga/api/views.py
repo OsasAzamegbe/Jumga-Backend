@@ -264,17 +264,19 @@ def ghana_payment (request, *args, **kwargs):
 def payouts_transfer(request, *args, **kwargs):
     try:
         data = request.data
-        query_params = request.GET
         payload = {}
 
-        if "destination" not in query_params:
+        try:
+            query_params = request.GET
+            destination = query_params["destination"].lower()
+        except KeyError as e:
             return Response(data={
                 "status": "error",
-                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank, mpesa, gh_mobile, gh_bank'].",
+                "message": f"Query parameters is missing the field {e}. Possible values are: ['ng_bank, mpesa, gh_mobile, gh_bank'].",
                 "data": None
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_400_BAD_REQUEST)      
 
-        if query_params["destination"].lower() == "ng_bank":
+        if destination == "ng_bank":
             payload = {
                 "debit_currency": data["debit_currency"],
                 "currency": data["currency"],
@@ -285,8 +287,7 @@ def payouts_transfer(request, *args, **kwargs):
                 "narration": data["narration"],
                 "callback_url": data["callback_url"]
             }
-
-        if query_params["destination"].lower() == "mpesa":
+        elif destination == "mpesa":
             payload = {
                 "currency": "KES",
                 "amount": data["amount"],
@@ -296,8 +297,7 @@ def payouts_transfer(request, *args, **kwargs):
                 "narration": data["narration"],
                 "beneficiary_name": data["beneficiary_name"]
             }
-
-        if query_params["destination"].lower() == "gh_mobile":
+        elif destination == "gh_mobile":
             payload = {
                 "currency": "GHS",
                 "amount": data["amount"],
@@ -307,19 +307,24 @@ def payouts_transfer(request, *args, **kwargs):
                 "narration": data["narration"],
                 "beneficiary_name": data["beneficiary_name"]
             }
-
-        if query_params["destination"].lower() == "gh_bank":
-                payload = {
-                    "currency": "GHS",
-                    "amount": data["amount"],
-                    "reference": data["reference"],
-                    "callback_url": data["callback_url"],
-                    "destination_branch_code": data["destination_branch_code"],
-                    "account_bank": data["account_bank"],
-                    "account_number": data["account_number"],
-                    "narration": data["narration"],
-                    "beneficiary_name": data["beneficiary_name"]
-                }
+        elif destination == "gh_bank":
+            payload = {
+                "currency": "GHS",
+                "amount": data["amount"],
+                "reference": data["reference"],
+                "callback_url": data["callback_url"],
+                "destination_branch_code": data["destination_branch_code"],
+                "account_bank": data["account_bank"],
+                "account_number": data["account_number"],
+                "narration": data["narration"],
+                "beneficiary_name": data["beneficiary_name"]
+            }        
+        else:
+            return Response(data={
+                "status": "error",
+                "message": "Invalid value for query parameter 'destination'. Possible values are: ['ng_bank, mpesa, gh_mobile, gh_bank'].",
+                "data": None
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
         payout_response = rave.payouts_transfer(payload)
