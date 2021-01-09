@@ -142,6 +142,10 @@ def ng_bank_payment (request, *args, **kwargs):
             "account_bank": data["account_bank"]
         }
 
+        # BVN required for UBA aacounts
+        if data["account_bank"] == "033":
+            payload["bvn"] = data["bvn"]
+
         rave = Rave(secret_key=SECRET_KEY, encryption_key=ENCRYPTION_KEY)
         charge_response = rave.charge_bank_ng(payload)
 
