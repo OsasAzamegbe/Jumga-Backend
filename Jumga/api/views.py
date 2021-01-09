@@ -263,6 +263,13 @@ def payouts_transfer(request, *args, **kwargs):
         query_params = request.GET
         payload = {}
 
+        if "destination" not in query_params:
+            return Response(data={
+                "status": "error",
+                "message": "Query parameter is missing the field ['destination']. Possible values are: ['ng_bank'].",
+                "data": None
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         if query_params["destination"] == "ng_bank":
             payload = {
                 "debit_currency": data["debit_currency"],
