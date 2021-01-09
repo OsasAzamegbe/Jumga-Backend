@@ -272,7 +272,7 @@ def payouts_transfer(request, *args, **kwargs):
         except KeyError as e:
             return Response(data={
                 "status": "error",
-                "message": f"Query parameters is missing the field {e}. Possible values are: ['ng_bank, mpesa, gh_mobile, gh_bank'].",
+                "message": f"Query parameters is missing the field {e}. Possible values are: ['ng_bank', 'mpesa', 'gh_mobile', 'gh_bank'].",
                 "data": None
             }, status=status.HTTP_400_BAD_REQUEST)      
 
@@ -322,7 +322,7 @@ def payouts_transfer(request, *args, **kwargs):
         else:
             return Response(data={
                 "status": "error",
-                "message": "Invalid value for query parameter 'destination'. Possible values are: ['ng_bank, mpesa, gh_mobile, gh_bank'].",
+                "message": "Invalid value for query parameter 'destination'. Possible values are: ['ng_bank', 'mpesa', 'gh_mobile', 'gh_bank'].",
                 "data": None
             }, status=status.HTTP_400_BAD_REQUEST)
 
