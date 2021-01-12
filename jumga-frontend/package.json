@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && DEL /S /Q ..\\build && xcopy /E /H /C /I build ..\\build",
+    "build": "react-scripts build && DEL /S /Q ..\\Jumga\\build && xcopy /E /H /C /I build ..\\Jumga\\build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
