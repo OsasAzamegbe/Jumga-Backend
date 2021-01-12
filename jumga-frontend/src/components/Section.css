@@ -1,0 +1,118 @@
+.home__home-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary);
+    width: 100%;
+    padding: 60px 100px;
+    min-height: calc(100vh - 80px);
+}
+  
+.home__home-row {
+    align-items: center;
+}
+  
+.row {
+    display: flex;
+    margin-right: -15px;
+    margin-bottom: -15px;
+    margin-left: -15px;
+    flex-wrap: wrap;
+    align-content: stretch;
+}
+  
+.col {
+    margin-bottom: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
+    flex: 1;
+    max-width: 50%;
+    flex-basis: 50%;
+}
+  
+.home__home-text-wrapper {
+    max-width: 540px;
+    padding-top: 0;
+    padding-bottom: 60px;
+}
+  
+.top-line {
+    color: var(--dark-red);
+    font-size: 16px;
+    line-height: 16px;
+    font-weight: 700;
+    font-family: 'Krona One', sans-serif;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+  
+.heading {
+    margin-bottom: 24px;
+    font-size: 72px;
+    line-height: 84px;
+    font-weight: 600;
+    color: var(--off-white);
+}
+  
+.dark {
+    color: var(--primary) !important;
+}
+  
+.darkBg {
+    background-color: var(--background-dark) !important;
+}
+
+.light-red{
+    color: var(--red) !important;
+}
+  
+.home__home-subtitle {
+    max-width: 440px;
+    margin-bottom: 35px;
+    font-size: 20px;
+    font-family: 'Playfair Display', serif;
+    line-height: 28px;
+    text-align: justify;
+    color: var(--off-white);
+}
+  
+.home__home-img-wrapper {
+    max-width: 555px;
+}
+  
+.home__home-img {
+    max-width: 95%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-left: 10px;
+    padding-right: 0;
+}
+  
+img {
+    border: 0;
+    max-width: 100%;
+    vertical-align: middle;
+    display: inline-block;
+}
+  
+@media screen and (max-width: 991px) {
+    .heading{
+        font-size: 40px;
+    }
+    .home__home-section{
+        padding: 30px 50px;
+    }
+}
+  
+@media screen and (max-width: 768px) {
+    .home__home-text-wrapper {
+      padding-bottom: 65px;
+    }
+  
+    .col {
+      max-width: 100%;
+      flex-basis: 100%;
+    }
+}
