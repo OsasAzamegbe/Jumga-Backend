@@ -8,6 +8,7 @@ import Home from './pages/home/Home';
 import Signup from './pages/signup/SignUp';
 import { useAuth } from './context/AuthProvider';
 import AlertProvider from './context/AlertProvider';
+import Alert from './components/Alert';
 
 const App = () => {
   const { dispatch } = useAuth();
@@ -33,6 +34,7 @@ const App = () => {
       <AlertProvider>
         <Router>
           <Navbar/>
+          <Alert/>
           <Switch>
             <Route exact path="/" component={Home}/>
             <Route path="/signup/" component={Signup}/>
