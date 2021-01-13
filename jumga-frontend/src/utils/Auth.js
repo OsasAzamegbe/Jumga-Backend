@@ -13,10 +13,17 @@ const signup = async(body, dispatch) => {
         const url = `${process.env.REACT_APP_BACKEND_API_URL}/auth/signup`
         const response = await axios.post(url, body, config);
         const payload = await response.json();
-        dispatch({
-            type: "LOGIN",
-            payload
-        })
+        if (response.status === 201){
+            dispatch({
+                type: "LOGIN",
+                payload
+            })
+        } else{
+            console.log(payload)
+        };
+        
+        return response.status === 201;
+        
     } catch(err){
         console.log(err)
     }
