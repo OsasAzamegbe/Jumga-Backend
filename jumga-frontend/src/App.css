@@ -64,18 +64,32 @@ body {
     cursor: default;
 }
 
+.alert-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .alert{
-    background-color: var(--dark-red);
-    width: 100%;
+    width: 80%;
     line-height: 32px;
+    margin-bottom: 10px;
+    border-radius: 5px;
 }
 
 .alert-green{
     background-color: var(--green);
 }
+.alert-red{
+    background-color: var(--dark-red);
+}
+.alert-blue{
+    background-color: var(--chroma-blue);
+}
 
 .alert-text{
     color: var(--off-white);
     font-size: 16px;
-
+    line-height: 40px;
+    text-align: center;
 }
