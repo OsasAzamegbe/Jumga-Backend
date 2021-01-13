@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Cookies from 'js-Cookies';
+import Cookies from 'js-cookies';
 
 //SIGNUP FUNC
 const signup = async(body, dispatch) => {
@@ -21,7 +21,7 @@ const signup = async(body, dispatch) => {
         } else{
             console.log(payload)
         };
-        
+
         return response.status === 201;
         
     } catch(err){
