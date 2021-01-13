@@ -22,7 +22,7 @@ const signup = async(body, dispatch) => {
             console.log(payload)
         };
 
-        return response.status === 201;
+        return payload;
         
     } catch(err){
         console.log(err)

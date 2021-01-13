@@ -7,6 +7,7 @@ import Form from '../../components/Form';
 import validateInput from '../../utils/Validation';
 import { signup } from '../../utils/Auth';
 import { useAuth } from '../../context/AuthProvider';
+import { useAlerts } from '../../context/AlertProvider';
 
 
 const SignUpForm = () => {
@@ -21,6 +22,7 @@ const SignUpForm = () => {
     const [errors, setErrors] = useState(null);
 
     const { dispatch } = useAuth();
+    const { setAlert } = useAlerts();
 
     const redirect = (route) => <Redirect to={route}/>;
     
@@ -63,8 +65,14 @@ const SignUpForm = () => {
         const {status} = validateInput({email, password, password_confirm}, setErrors);
 
         if(status && !errors){
-            const signupSuccess = await signup(dispatch);
-            if(signupSuccess) redirect("/dashboard/");     
+            const payload = await signup(dispatch);
+
+            if(payload.status === "successful") {
+                setAlert("GREEN", payload.message)
+                redirect("/dashboard/");
+            } else{
+                setAlert("RED", payload.message)
+            };     
         };
         
         setLoading(false);
