@@ -9,7 +9,7 @@ const sectionOneObj = {
     buttonLabel: "JOIN US!",
     buttonLink: "signup/",
     imgStart: false,
-    img: "images/svg-2.svg",
+    img: "images/svg-3.svg",
     alt: "placeholder for home"
 };
 
