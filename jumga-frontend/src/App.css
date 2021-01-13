@@ -70,7 +70,7 @@ body {
     line-height: 32px;
 }
 
-.alert-success{
+.alert-green{
     background-color: var(--green);
 }
 

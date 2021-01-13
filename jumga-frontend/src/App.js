@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/home/Home';
 import Signup from './pages/signup/SignUp';
 import { useAuth } from './context/AuthProvider';
+import AlertProvider from './context/AlertProvider';
 
 const App = () => {
   const { dispatch } = useAuth();
@@ -29,6 +30,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <AlertProvider>
         <Router>
           <Navbar/>
           <Switch>
@@ -36,6 +38,7 @@ const App = () => {
             <Route path="/signup/" component={Signup}/>
           </Switch>
         </Router>
+      </AlertProvider>        
     </div>
   );
 };
