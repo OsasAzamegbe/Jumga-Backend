@@ -5,6 +5,8 @@ import './SignUp.css'
 import Form from '../../components/Form';
 
 import validateInput from '../../utils/Validation';
+import { signup } from '../../utils/Auth';
+import { useAuth } from '../../context/AuthProvider';
 
 
 const SignUpForm = () => {
@@ -18,6 +20,7 @@ const SignUpForm = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState(null);
 
+    const { dispatch } = useAuth();
 
     const redirect = (route) => <Redirect to={route}/>;
     
@@ -60,8 +63,8 @@ const SignUpForm = () => {
         const {status} = validateInput({email, password, password_confirm}, setErrors);
 
         if(status && !errors){
-            //SIGNUP FUNC 
-            redirect("/dashboard/");     
+            const signupSuccess = await signup(dispatch);
+            if(signupSuccess) redirect("/dashboard/");     
         };
         
         setLoading(false);
