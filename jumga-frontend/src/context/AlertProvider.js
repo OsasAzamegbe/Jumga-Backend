@@ -5,13 +5,10 @@ const AlertContext = React.createContext();
 
 const useAlerts = () => useContext(AlertContext);
 
-const initAlertState = [{
-    color: "alert-blue",
-    message: ""
-}];
+const initAlertState = [];
 
 const reducer = (state, action) => {
-    switch (action.type) {
+    switch (action.color) {
         case "RED":
             return [
                 ...state,
@@ -33,6 +30,8 @@ const reducer = (state, action) => {
                 color: "alert-blue",
                 message: action.message
             }];
+        case "DELETE":
+            return state.filter((_, index) => index !== 0)
         default:
             return state;
     };
@@ -40,9 +39,21 @@ const reducer = (state, action) => {
 
 const AlertProvider = ({children}) => {
     const [alerts, dispatch] = useReducer(reducer, initAlertState);
+
+    const setAlert = (color, message) => {
+        dispatch({
+            color,
+            message
+        });
+
+        setTimeout(() =>{
+            dispatch({color: "DELETE"})
+        }, 3000)
+    };
+
     const value = {
         alerts,
-        dispatch
+        setAlert
     };
 
     return(
