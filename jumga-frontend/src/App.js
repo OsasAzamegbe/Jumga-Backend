@@ -23,7 +23,7 @@ const App = () => {
         payload: {
           user,
           merchant,
-          dispatchRider
+          dispatch_rider: dispatchRider
         }
       });
     };
