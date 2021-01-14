@@ -18,7 +18,7 @@ import json
 
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
-@csrf_protect
+# @csrf_protect
 def signup(request, *args, **kwargs):
     try:
         data = request.data
