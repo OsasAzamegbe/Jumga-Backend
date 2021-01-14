@@ -65,7 +65,15 @@ const SignUpForm = () => {
         const {status} = validateInput({email, password, password_confirm}, setErrors);
 
         if(status && !errors){
-            const payload = await signup(dispatch);
+            const body = {
+                first_name,
+                last_name,
+                username,
+                email,
+                password,
+                password_confirm
+            }
+            const payload = await signup(body, dispatch);
 
             if(payload.status === "successful") {
                 setAlert("GREEN", payload.message)
