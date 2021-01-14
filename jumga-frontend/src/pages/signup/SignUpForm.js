@@ -23,8 +23,6 @@ const SignUpForm = () => {
 
     const { dispatch } = useAuth();
     const { setAlert } = useAlerts();
-
-    const redirect = (route) => <Redirect to={route}/>;
     
     const first_nameHandler = (e) => {
         setfirst_name(e.target.value);
@@ -72,14 +70,18 @@ const SignUpForm = () => {
                 email,
                 password,
                 password_confirm
-            }
-            const payload = await signup(body, dispatch);
+            };
+            const payload = await signup(body);
 
             if(payload.status === "successful") {
-                setAlert("GREEN", payload.message)
-                redirect("/dashboard/");
+                dispatch({
+                    type: "LOGIN",
+                    payload: payload.data
+                });
+                setAlert("GREEN", payload.message);
+                <Redirect to="/" />
             } else{
-                setAlert("RED", payload.message)
+                setAlert("RED", payload.message);
             };     
         };
         

@@ -1,7 +1,7 @@
 import Cookies from 'js-cookies';
 
 //SIGNUP FUNC
-const signup = async(body, dispatch) => {
+const signup = async(body) => {
     try{
         const csrf = Cookies.getItem('csrftoken');
         const url = `${process.env.REACT_APP_BACKEND_API_URL}/auth/signup`
@@ -15,14 +15,7 @@ const signup = async(body, dispatch) => {
             body: JSON.stringify(body)
         });
         const payload = await response.json();
-
-        if (response.status === 201){
-            dispatch({
-                type: "LOGIN",
-                payload
-            })
-        };
-
+        
         return payload;
         
     } catch(err){
