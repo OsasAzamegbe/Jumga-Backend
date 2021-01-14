@@ -48,7 +48,7 @@ const AlertProvider = ({children}) => {
 
         setTimeout(() =>{
             dispatch({color: "DELETE"})
-        }, 3000)
+        }, 5000)
     };
 
     const value = {
