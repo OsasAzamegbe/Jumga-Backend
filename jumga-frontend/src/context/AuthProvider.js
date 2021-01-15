@@ -1,4 +1,5 @@
 import React, { useContext, useReducer} from 'react';
+import Cookies from 'js-cookie';
 
 
 const AuthContext = React.createContext();
@@ -9,30 +10,32 @@ const initUserState = {
     isAuthenticated: false,
     user: null,
     merchant: null,
-    dispatchRider: null
+    dispatch_rider: null
 };
 
 const reducer = (state, action) => {
     switch (action.type) {
         case "LOGIN":
-            localStorage.setItem("user", JSON.stringify(action.payload.user));
-            localStorage.setItem("merchant", JSON.stringify(action.payload.merchant))
-            localStorage.setItem("dispatchRider", JSON.stringify(action.payload.dispatch_rider));
+            Cookies.set("user", action.payload.user, {expires: 7});
+            Cookies.set("merchant", action.payload.merchant, {expires: 7})
+            Cookies.set("dispatch_rider", action.payload.dispatch_rider, {expires: 7});
             return {
                 ...state,
                 isAuthenticated: true,
                 user: action.payload.user,
                 merchant: action.payload.merchant,
-                dispatchRider: action.payload.dispatch_rider
+                dispatch_rider: action.payload.dispatch_rider
             };
         case "LOGOUT":
-            localStorage.clear();
+            Cookies.remove("user");
+            Cookies.remove("merchant");
+            Cookies.remove("dispatch_rider");
             return {
                 ...state,
                 isAuthenticated: false,
                 user: null,
                 merchant: null,
-                dispatchRider: null
+                dispatch_rider: null
             };
         default:
             return state;
